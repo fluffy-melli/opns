@@ -5,9 +5,9 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"opns/bin/Bot"
-	"opns/bin/Command"
-	"opns/bin/list"
+	"github.com/shibaisdog/opns/bin/Bot"
+	"github.com/shibaisdog/opns/bin/Command"
+	"github.com/shibaisdog/opns/bin/list"
 )
 
 func main() {

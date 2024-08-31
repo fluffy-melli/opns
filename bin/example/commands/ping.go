@@ -1,9 +1,9 @@
-package list
+package commands
 
 import (
 	"fmt"
 
-	"opns/bin/Command"
+	"github.com/shibaisdog/opns/bin/Command"
 
 	"github.com/bwmarrin/discordgo"
 )

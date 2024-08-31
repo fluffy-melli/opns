@@ -1,4 +1,4 @@
-module opns
+module github.com/shibaisdog/opns
 
 go 1.22.2
 
