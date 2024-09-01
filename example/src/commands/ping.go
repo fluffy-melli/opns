@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"time"
+
 	"github.com/shibaisdog/opns"
 
 	"github.com/bwmarrin/discordgo"
@@ -18,7 +20,16 @@ var PING = opns.Slash_Command{
 					Title: "Pong!",
 				},
 			},
-			Ephemeral: true,
 		})
+		time.Sleep(3 * time.Second)
+		hlr.Edit(opns.Edit_Message{
+			Embeds: []*discordgo.MessageEmbed{
+				{
+					Title: "Pong?",
+				},
+			},
+		})
+		time.Sleep(3 * time.Second)
+		hlr.Delete()
 	},
 }
