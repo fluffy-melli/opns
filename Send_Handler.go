@@ -17,7 +17,7 @@ InteractionRespond creates the response to an interaction.
 Text      :  string
 Files     : *discordgo.File{}
 Embeds    : *discordgo.MessageEmbed{}
-Buttons   : discordgo.MessageComponent{}
+Buttons   : discordgo.Button
 Ephemeral :  bool
 */
 func (h *Slash_Handler) Respond(Content ...interface{}) {
@@ -35,8 +35,8 @@ func (h *Slash_Handler) Respond(Content ...interface{}) {
 			Text += v
 		case *discordgo.MessageEmbed:
 			Embeds = append(Embeds, v)
-		case discordgo.File:
-			Files = append(Files, &v)
+		case *discordgo.File:
+			Files = append(Files, v)
 		case discordgo.Button:
 			Buttons = append(Buttons, v)
 		default:
