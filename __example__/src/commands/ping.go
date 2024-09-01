@@ -3,33 +3,38 @@ package commands
 import (
 	"time"
 
-	"github.com/shibaisdog/opns"
+	"github.com/shibaisdog/opns/Command"
+	"github.com/shibaisdog/opns/Slash"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-var PING = opns.Slash_Command{
+var PING = Command.Setup_Slash{
 	Definition: &discordgo.ApplicationCommand{
 		Name:        "ping",
 		Description: "Replies with Pong!",
 	},
-	Handler: func(hlr opns.Slash_Handler) {
-		hlr.Respond(opns.Message{
+	Handler: func(hlr Slash.Event) {
+		hlr.Reply(Slash.Message{
 			Embeds: []*discordgo.MessageEmbed{
 				{
 					Title: "Pong!",
 				},
 			},
 		})
-		time.Sleep(3 * time.Second)
-		hlr.Edit(opns.Edit_Message{
+		time.Sleep(2 * time.Second)
+		hlr.Edit(Slash.Edit_Message{
 			Embeds: []*discordgo.MessageEmbed{
 				{
 					Title: "Pong?",
 				},
 			},
 		})
-		time.Sleep(3 * time.Second)
+		time.Sleep(2 * time.Second)
+		hlr.Followup(Slash.Webhook{
+			Text: "Pong!",
+		})
+		time.Sleep(2 * time.Second)
 		hlr.Delete()
 	},
 }

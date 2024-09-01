@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	bot := opns.Env_Create("Token")
+	bot := opns.Env_Create_Bot("Token")
 	bot.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		fmt.Println("bot run successfully")
 		commands.PING.Register()
