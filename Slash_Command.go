@@ -8,7 +8,7 @@ import (
 
 type Slash_Command struct {
 	Definition *discordgo.ApplicationCommand
-	Handler    func(Handler)
+	Handler    func(Slash_Handler)
 }
 
 var CommandList = []Slash_Command{}

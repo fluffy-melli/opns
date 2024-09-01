@@ -79,7 +79,7 @@ func (bot *Bot) Upload_Slash_Command() {
 			}
 			if i.ApplicationCommandData().Name == cmd.Definition.Name {
 				respond = true
-				cmd.Handler(Handler{
+				cmd.Handler(Slash_Handler{
 					Interaction: i,
 					Client:      s,
 				})
