@@ -9,13 +9,16 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
+
+	"github.com/shibaisdog/opns/Command"
+	"github.com/shibaisdog/opns/Slash"
 )
 
 type Bot struct {
 	Session *discordgo.Session
 }
 
-func Create(Token string) Bot {
+func Create_Bot(Token string) Bot {
 	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {
 		log.Fatalln("error creating Discord session,", err)
@@ -25,7 +28,7 @@ func Create(Token string) Bot {
 	}
 }
 
-func Env_Create(env_key string) Bot {
+func Env_Create_Bot(env_key string) Bot {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalln("Error loading .env file")
@@ -65,7 +68,7 @@ func (bot *Bot) Upload_Slash_Command() {
 		log.Fatalf("Error: discord session state user is nil")
 		return
 	}
-	for _, cmd := range CommandList {
+	for _, cmd := range Command.Slash_CommandList {
 		_, err := bot.Session.ApplicationCommandCreate(bot.Session.State.User.ID, "", cmd.Definition)
 		if err != nil {
 			log.Fatalf("Cannot create command: '%v' err: %v", cmd.Definition.Name, err)
@@ -74,13 +77,13 @@ func (bot *Bot) Upload_Slash_Command() {
 	}
 	bot.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		respond := false
-		for _, cmd := range CommandList {
+		for _, cmd := range Command.Slash_CommandList {
 			if i.Type != discordgo.InteractionApplicationCommand {
 				continue
 			}
 			if i.ApplicationCommandData().Name == cmd.Definition.Name {
 				respond = true
-				cmd.Handler(Slash_Handler{
+				cmd.Handler(Slash.Event{
 					Interaction: i,
 					Client:      s,
 				})
