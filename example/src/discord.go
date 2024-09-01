@@ -13,7 +13,7 @@ func main() {
 	bot := opns.Env_Create("Token")
 	bot.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		fmt.Println("bot run successfully")
-		commands.PING.Commit()
+		commands.PING.Register()
 		bot.Upload_Slash_Command()
 	})
 	///////////////////////////

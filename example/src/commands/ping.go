@@ -11,7 +11,14 @@ var PING = opns.Slash_Command{
 		Name:        "ping",
 		Description: "Replies with Pong!",
 	},
-	Handler: func(hlr opns.Handler) {
-		hlr.Respond("Pong")
+	Handler: func(hlr opns.Slash_Handler) {
+		hlr.Respond(opns.Message{
+			Embeds: []*discordgo.MessageEmbed{
+				{
+					Title: "Pong!",
+				},
+			},
+			Ephemeral: true,
+		})
 	},
 }
