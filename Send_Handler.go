@@ -2,10 +2,17 @@ package opns
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/bwmarrin/discordgo"
 )
+
+type Message struct {
+	Text      string
+	Files     []*discordgo.File
+	Embeds    []*discordgo.MessageEmbed
+	Buttons   []discordgo.Button
+	Ephemeral bool
+}
 
 type Slash_Handler struct {
 	Interaction *discordgo.InteractionCreate
@@ -17,50 +24,29 @@ InteractionRespond creates the response to an interaction.
 Text      :  string
 Files     : *discordgo.File{}
 Embeds    : *discordgo.MessageEmbed{}
-Buttons   : discordgo.Button
+Buttons   : []discordgo.Button
 Ephemeral :  bool
 */
-func (h *Slash_Handler) Respond(Content ...interface{}) {
-	var Text = ""
-	var Files = []*discordgo.File{}
-	var Embeds = []*discordgo.MessageEmbed{}
-	var Buttons = []discordgo.MessageComponent{}
-	var Ephemeral = false
-
-	for _, v := range Content {
-		switch v := v.(type) {
-		case bool:
-			Ephemeral = true
-		case string:
-			Text += v
-		case *discordgo.MessageEmbed:
-			Embeds = append(Embeds, v)
-		case *discordgo.File:
-			Files = append(Files, v)
-		case discordgo.Button:
-			Buttons = append(Buttons, v)
-		default:
-			log.Fatalf("unknown type")
-		}
-	}
+func (h *Slash_Handler) Respond(Message Message) {
 	var Data = discordgo.InteractionResponseData{}
-	if Text != "" {
-		Data.Content = Text
+	if Message.Text != "" {
+		Data.Content = Message.Text
 	}
-	if len(Files) != 0 {
-		Data.Files = Files
+	if len(Message.Files) != 0 {
+		Data.Files = Message.Files
 	}
-	if len(Embeds) != 0 {
-		Data.Embeds = Embeds
+	if len(Message.Embeds) != 0 {
+		Data.Embeds = Message.Embeds
 	}
-	if len(Buttons) != 0 {
-		Data.Components = []discordgo.MessageComponent{
-			discordgo.ActionsRow{
-				Components: Buttons,
-			},
+	if len(Message.Buttons) > 0 { // Check if there are any buttons
+		// Convert buttons to MessageComponents
+		buttons := make([]discordgo.MessageComponent, len(Message.Buttons))
+		for i, button := range Message.Buttons {
+			buttons[i] = button
 		}
+		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: buttons})
 	}
-	if Ephemeral {
+	if Message.Ephemeral {
 		Data.Flags = discordgo.MessageFlagsEphemeral
 	}
 	err := h.Client.InteractionRespond(h.Interaction.Interaction, &discordgo.InteractionResponse{
