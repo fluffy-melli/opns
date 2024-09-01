@@ -4,7 +4,7 @@ go 1.22.2
 
 require (
 	github.com/bwmarrin/discordgo v0.28.1
-	github.com/shibaisdog/opns v0.0.0-20240901005849-c815cafcd8ad
+	github.com/shibaisdog/opns v0.0.0-20240901012037-ba6ba8ad9b19
 )
 
 require (
