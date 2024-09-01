@@ -58,3 +58,35 @@ func (bot *Bot) Connect() {
 func (bot *Bot) AddHandler(handler interface{}) func() {
 	return bot.Session.AddHandler(handler)
 }
+
+func (bot *Bot) Upload_Slash_Command() {
+	if bot.Session.State.User == nil {
+		log.Fatalf("Error: discord session state user is nil")
+		return
+	}
+	for _, cmd := range CommandList {
+		_, err := bot.Session.ApplicationCommandCreate(bot.Session.State.User.ID, "", cmd.Definition)
+		if err != nil {
+			log.Fatalf("Cannot create command: '%v' err: %v", cmd.Definition.Name, err)
+		}
+		log.Println("Create Command: ", cmd.Definition.Name)
+	}
+	bot.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		respond := false
+		for _, cmd := range CommandList {
+			if i.Type != discordgo.InteractionApplicationCommand {
+				continue
+			}
+			if i.ApplicationCommandData().Name == cmd.Definition.Name {
+				respond = true
+				cmd.Handler(Handler{
+					Interaction: i,
+					Client:      s,
+				})
+			}
+		}
+		if !respond {
+			log.Fatalf("Unknown Command: '%v'", i.ApplicationCommandData().Name)
+		}
+	})
+}
