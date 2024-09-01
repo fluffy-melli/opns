@@ -27,26 +27,26 @@ Embeds    : *discordgo.MessageEmbed{}
 Buttons   : []discordgo.Button
 Ephemeral :  bool
 */
-func (h *Slash_Handler) Respond(Message Message) {
+func (h *Slash_Handler) Respond(message Message) {
 	var Data = discordgo.InteractionResponseData{}
-	if Message.Text != "" {
-		Data.Content = Message.Text
+	if message.Text != "" {
+		Data.Content = message.Text
 	}
-	if len(Message.Files) != 0 {
-		Data.Files = Message.Files
+	if len(message.Files) != 0 {
+		Data.Files = message.Files
 	}
-	if len(Message.Embeds) != 0 {
-		Data.Embeds = Message.Embeds
+	if len(message.Embeds) != 0 {
+		Data.Embeds = message.Embeds
 	}
-	if len(Message.Buttons) > 0 { // Check if there are any buttons
+	if len(message.Buttons) > 0 { // Check if there are any buttons
 		// Convert buttons to MessageComponents
-		buttons := make([]discordgo.MessageComponent, len(Message.Buttons))
-		for i, button := range Message.Buttons {
+		buttons := make([]discordgo.MessageComponent, len(message.Buttons))
+		for i, button := range message.Buttons {
 			buttons[i] = button
 		}
 		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: buttons})
 	}
-	if Message.Ephemeral {
+	if message.Ephemeral {
 		Data.Flags = discordgo.MessageFlagsEphemeral
 	}
 	err := h.Client.InteractionRespond(h.Interaction.Interaction, &discordgo.InteractionResponse{
