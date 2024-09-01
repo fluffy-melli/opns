@@ -13,7 +13,8 @@ type Slash_Command struct {
 
 var CommandList = []Slash_Command{}
 
-func (S *Slash_Command) Commit() {
+// Register the command
+func (S *Slash_Command) Register() {
 	if S.Definition == nil || S.Handler == nil {
 		log.Fatalf("Warning: Slash command is nil")
 		return

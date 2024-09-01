@@ -38,8 +38,7 @@ func (h *Slash_Handler) Respond(message Message) {
 	if len(message.Embeds) != 0 {
 		Data.Embeds = message.Embeds
 	}
-	if len(message.Buttons) > 0 { // Check if there are any buttons
-		// Convert buttons to MessageComponents
+	if len(message.Buttons) > 0 {
 		buttons := make([]discordgo.MessageComponent, len(message.Buttons))
 		for i, button := range message.Buttons {
 			buttons[i] = button

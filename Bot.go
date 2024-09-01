@@ -25,12 +25,12 @@ func Create(Token string) Bot {
 	}
 }
 
-func Env_Create(Token string) Bot {
+func Env_Create(env_key string) Bot {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalln("Error loading .env file")
 	}
-	dg, err := discordgo.New("Bot " + os.Getenv(Token))
+	dg, err := discordgo.New("Bot " + os.Getenv(env_key))
 	if err != nil {
 		log.Fatalln("error creating Discord session,", err)
 	}
@@ -59,6 +59,7 @@ func (bot *Bot) AddHandler(handler interface{}) func() {
 	return bot.Session.AddHandler(handler)
 }
 
+// Register the registered Slash-Command in Discord.
 func (bot *Bot) Upload_Slash_Command() {
 	if bot.Session.State.User == nil {
 		log.Fatalf("Error: discord session state user is nil")
