@@ -29,13 +29,6 @@ var PING = Command.Setup_Slash{
 					Title: "Pong?",
 				},
 			},
-			Buttons: []discordgo.Button{
-				{
-					Label:    "UwU",
-					Style:    discordgo.PrimaryButton,
-					CustomID: "b",
-				},
-			},
 		})
 		time.Sleep(2 * time.Second)
 		hlr.Followup(Slash.Webhook{
