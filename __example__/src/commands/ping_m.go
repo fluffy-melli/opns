@@ -22,21 +22,17 @@ var PING_MSG = Command.Setup_Message{
 			},
 		})
 		time.Sleep(2 * time.Second)
-		MSG := hlr.Edit_ID(Message.Edit_Message{
+		MSG := RPL.Edit(Message.Edit_Message{
 			Embeds: []*discordgo.MessageEmbed{
 				{
 					Title: "Pong?",
 				},
 			},
-		}, RPL.ID, RPL.ChannelID)
+		})
 		time.Sleep(2 * time.Second)
 		hlr.Channel_Send(Message.Message{
-			Text: "Pong!",
-			Reference: &discordgo.MessageReference{
-				MessageID: MSG.ID,
-				ChannelID: MSG.ChannelID,
-				GuildID:   MSG.GuildID,
-			},
+			Text:      "Pong!",
+			Reference: MSG.Reference(),
 		})
 	},
 }
