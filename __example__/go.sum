@@ -5,10 +5,8 @@ github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aN
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
-github.com/shibaisdog/opns v0.0.0-20240901050257-19d94e60a28b h1:wUqOUwKL4JYiFhok4AUSwPQgERQb81llVijHCWuiLoU=
-github.com/shibaisdog/opns v0.0.0-20240901050257-19d94e60a28b/go.mod h1:KmQrLzm9vjuCvYKb0HTA3C4AtTXAYjjILsaQfZdraBg=
-github.com/shibaisdog/opns v0.0.0-20240901120030-18d2db521db5 h1:IObWuH2jxAlB5mweCDvplY5mFSkYJJ7QpWR59/v06BE=
-github.com/shibaisdog/opns v0.0.0-20240901120030-18d2db521db5/go.mod h1:KmQrLzm9vjuCvYKb0HTA3C4AtTXAYjjILsaQfZdraBg=
+github.com/shibaisdog/opns v0.0.0-20240902084257-ec30bebf7f57 h1:2Dtv2FHq7LIma8sNu7sIC42ivdGAgUPtxx7gJw4cYYM=
+github.com/shibaisdog/opns v0.0.0-20240902084257-ec30bebf7f57/go.mod h1:KmQrLzm9vjuCvYKb0HTA3C4AtTXAYjjILsaQfZdraBg=
 golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b/go.mod h1:T9bdIzuCu7OtxOm1hfPfRQxPLYneinmdGuTeoZ9dtd4=
 golang.org/x/crypto v0.26.0 h1:RrRspgV4mU+YwB4FYnuBoKsUapNIL5cohGAmSH3azsw=
 golang.org/x/crypto v0.26.0/go.mod h1:GY7jblb9wI+FOo5y8/S2oY4zWP07AkOJ4+jxCqdqn54=
