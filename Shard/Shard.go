@@ -1,7 +1,7 @@
 package Shard
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/shibaisdog/opns/Bot"
 )
@@ -20,7 +20,7 @@ func Create(Token string, ShardID int, Shard_Max int) Shard {
 	if Shard_Max <= 0 {
 		bot, err := Client.Session.GatewayBot()
 		if err != nil {
-			fmt.Println("error getting GatewayBot info,", err)
+			log.Fatalln("error getting GatewayBot info,", err)
 		}
 		ShardCount = (bot.Shards + 999) / 1000
 	} else {
@@ -33,13 +33,18 @@ func Create(Token string, ShardID int, Shard_Max int) Shard {
 		Count:  ShardCount,
 		ID:     ShardID,
 	}
+	log.Println("Create Shard index:", ShardID)
 	Shard_List = append(Shard_List, sh)
 	return sh
 }
 
 func Manager(Token string, ShardCount int) []Shard {
-	for i := 0; i <= ShardCount; i++ {
-		Create(Token, i, ShardCount)
+	if ShardCount > 0 {
+		for i := 0; i <= ShardCount; i++ {
+			Create(Token, i, ShardCount)
+		}
+	} else {
+		Create(Token, 0, -1)
 	}
 	return Shard_List
 }
