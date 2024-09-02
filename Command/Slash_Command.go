@@ -8,8 +8,10 @@ import (
 	"github.com/shibaisdog/opns/Slash"
 )
 
+type Slash_Definition *discordgo.ApplicationCommand
+
 type Setup_Slash struct {
-	Definition *discordgo.ApplicationCommand
+	Definition Slash_Definition
 	Handler    func(Slash.Event)
 }
 

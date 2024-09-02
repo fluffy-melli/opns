@@ -6,6 +6,11 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+type Event struct {
+	Interaction *discordgo.InteractionCreate
+	Client      *discordgo.Session
+}
+
 type Message struct {
 	Text      string
 	Files     []*discordgo.File
@@ -40,11 +45,6 @@ type Webhook struct {
 	AvatarURL       string
 	Wait            bool
 	TTS             bool
-}
-
-type Event struct {
-	Interaction *discordgo.InteractionCreate
-	Client      *discordgo.Session
 }
 
 type Response_Message struct {
@@ -231,7 +231,7 @@ func (h *Response_Message) Edit_Followup(message Edit_Message) *discordgo.Messag
 		Data.Attachments = &(message.Attachments)
 	}
 	Data.AllowedMentions = &(message.AllowedMentions)
-	edit_message, err := h.Handler.Client.FollowupMessageEdit(h.Handler.Interaction.Interaction, h.Message.MessageReference.MessageID, &Data)
+	edit_message, err := h.Handler.Client.FollowupMessageEdit(h.Handler.Interaction.Interaction, h.Message.ID, &Data)
 	if err != nil {
 		fmt.Println("error edit_following: ", err)
 	}

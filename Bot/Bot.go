@@ -1,4 +1,4 @@
-package opns
+package Bot
 
 import (
 	"fmt"
@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/shibaisdog/opns/Command"
+	"github.com/shibaisdog/opns/Message"
 	"github.com/shibaisdog/opns/Slash"
 )
 
@@ -18,7 +19,7 @@ type Bot struct {
 	Session *discordgo.Session
 }
 
-func Create_Bot(Token string) Bot {
+func Create(Token string) Bot {
 	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {
 		log.Fatalln("error creating Discord session,", err)
@@ -28,7 +29,7 @@ func Create_Bot(Token string) Bot {
 	}
 }
 
-func Env_Create_Bot(env_key string) Bot {
+func Env_Create(env_key string) Bot {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalln("Error loading .env file")
@@ -93,4 +94,21 @@ func (bot *Bot) Upload_Slash_Command() {
 			log.Fatalf("Unknown Command: '%v'", i.ApplicationCommandData().Name)
 		}
 	})
+}
+
+func (bot *Bot) Upload_Message_Command() {
+	if bot.Session.State.User == nil {
+		log.Fatalf("Error: discord session state user is nil")
+		return
+	}
+	for _, cmd := range Command.Message_CommandList {
+		bot.Session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
+			if m.Content == cmd.Definition.Name {
+				cmd.Handler(Message.Event{
+					Interaction: m,
+					Client:      s,
+				})
+			}
+		})
+	}
 }
