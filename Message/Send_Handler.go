@@ -189,3 +189,12 @@ func (h *Event) Edit(message Edit_Message, Message_ID string, Channel_ID string)
 		Handler: h,
 	}
 }
+
+// GET Reference
+func (rm *Response_Message) Reference() *discordgo.MessageReference {
+	return &discordgo.MessageReference{
+		MessageID: rm.Message.ID,
+		ChannelID: rm.Message.ChannelID,
+		GuildID:   rm.Message.GuildID,
+	}
+}
