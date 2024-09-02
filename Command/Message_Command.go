@@ -7,8 +7,8 @@ import (
 )
 
 type Message_Definition struct {
-	Name        *string
-	StartWith   *bool
+	Name        string
+	StartWith   bool
 	Description string
 }
 

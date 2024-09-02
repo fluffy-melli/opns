@@ -19,6 +19,7 @@ type Bot struct {
 	Session *discordgo.Session
 }
 
+// create a bot
 func Create(Token string) Bot {
 	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {
@@ -29,6 +30,7 @@ func Create(Token string) Bot {
 	}
 }
 
+// create a bot with dotenv
 func Env_Create(env_key string) Bot {
 	err := godotenv.Load()
 	if err != nil {
@@ -43,6 +45,7 @@ func Env_Create(env_key string) Bot {
 	}
 }
 
+// create a Wait Signal
 func Signal() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
@@ -51,6 +54,7 @@ func Signal() {
 	log.Println("The bot has exit")
 }
 
+// Connect the bot set up
 func (bot *Bot) Connect() {
 	err := bot.Session.Open()
 	if err != nil {
@@ -59,6 +63,7 @@ func (bot *Bot) Connect() {
 	}
 }
 
+// Add Bot Handler
 func (bot *Bot) AddHandler(handler interface{}) func() {
 	return bot.Session.AddHandler(handler)
 }
@@ -104,15 +109,15 @@ func (bot *Bot) Upload_Message_Command() {
 	}
 	for _, cmd := range Command.Message_CommandList {
 		bot.Session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-			if cmd.Definition.Name == nil {
+			if cmd.Definition.Name == "" {
 				log.Fatalln("The command name does not exist")
 			}
-			if m.Content == *cmd.Definition.Name {
+			if m.Content == cmd.Definition.Name {
 				cmd.Handler(Message.Event{
 					Interaction: m,
 					Client:      s,
 				})
-			} else if cmd.Definition.StartWith != nil && *cmd.Definition.StartWith && strings.HasPrefix(m.Content, *cmd.Definition.Name) {
+			} else if cmd.Definition.StartWith && strings.HasPrefix(m.Content, cmd.Definition.Name) {
 				cmd.Handler(Message.Event{
 					Interaction: m,
 					Client:      s,
