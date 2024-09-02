@@ -17,7 +17,7 @@ type Setup_Slash struct {
 
 var Slash_CommandList = []Setup_Slash{}
 
-// Register the command
+// Register the slash_command
 func (S *Setup_Slash) Register() {
 	if S.Definition == nil || S.Handler == nil {
 		log.Fatalf("Warning: Slash command is nil")

@@ -7,7 +7,8 @@ import (
 )
 
 type Message_Definition struct {
-	Name        string
+	Name        *string
+	StartWith   *bool
 	Description string
 }
 
@@ -18,7 +19,7 @@ type Setup_Message struct {
 
 var Message_CommandList = []Setup_Message{}
 
-// Register the command
+// Register the message_command
 func (S *Setup_Message) Register() {
 	if S.Definition == nil || S.Handler == nil {
 		log.Fatalf("Warning: Message command is nil")

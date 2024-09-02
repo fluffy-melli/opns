@@ -2,7 +2,9 @@ package Shard
 
 import (
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/shibaisdog/opns/Bot"
 )
 
@@ -13,6 +15,7 @@ type Shard struct {
 
 var Shard_List = []Shard{}
 
+// Create a new shard
 func Create(Token string, ShardID int, Shard_Max int) Shard {
 	Client := Bot.Create(Token)
 	Client.Session.ShardID = ShardID
@@ -24,8 +27,7 @@ func Create(Token string, ShardID int, Shard_Max int) Shard {
 		}
 		ShardCount = (bot.Shards + 999) / 1000
 	} else {
-		GuildCount := len(Client.Session.State.Guilds)
-		ShardCount = GuildCount / Shard_Max
+		ShardCount = Shard_Max
 	}
 	Client.Session.ShardCount = ShardCount
 	sh := Shard{
@@ -38,9 +40,10 @@ func Create(Token string, ShardID int, Shard_Max int) Shard {
 	return sh
 }
 
+// Set up shards automatically
 func Manager(Token string, ShardCount int) []Shard {
 	if ShardCount > 0 {
-		for i := 0; i <= ShardCount; i++ {
+		for i := 0; i < ShardCount; i++ {
 			Create(Token, i, ShardCount)
 		}
 	} else {
@@ -49,6 +52,23 @@ func Manager(Token string, ShardCount int) []Shard {
 	return Shard_List
 }
 
-func Get_List() []Shard {
+// Set up shards automatically with dotenv
+func Env_Manager(key string, ShardCount int) []Shard {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalln("Error loading .env file")
+	}
+	if ShardCount > 0 {
+		for i := 0; i < ShardCount; i++ {
+			Create(os.Getenv(key), i, ShardCount)
+		}
+	} else {
+		Create(os.Getenv(key), 0, -1)
+	}
+	return Shard_List
+}
+
+// Get the shard list
+func List() []Shard {
 	return Shard_List
 }

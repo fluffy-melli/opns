@@ -1,10 +1,10 @@
 package Bot
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
@@ -43,12 +43,12 @@ func Env_Create(env_key string) Bot {
 	}
 }
 
-func (bot *Bot) Signal() {
+func Signal() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	<-stop
-	bot.Session.Close()
-	fmt.Println("Bot stopped gracefully.")
+	//bot.Session.Close()
+	log.Println("The bot has exit")
 }
 
 func (bot *Bot) Connect() {
@@ -96,6 +96,7 @@ func (bot *Bot) Upload_Slash_Command() {
 	})
 }
 
+// Register the registered Message-Command in Discord.
 func (bot *Bot) Upload_Message_Command() {
 	if bot.Session.State.User == nil {
 		log.Fatalf("Error: discord session state user is nil")
@@ -103,7 +104,15 @@ func (bot *Bot) Upload_Message_Command() {
 	}
 	for _, cmd := range Command.Message_CommandList {
 		bot.Session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-			if m.Content == cmd.Definition.Name {
+			if cmd.Definition.Name == nil {
+				log.Fatalln("The command name does not exist")
+			}
+			if m.Content == *cmd.Definition.Name {
+				cmd.Handler(Message.Event{
+					Interaction: m,
+					Client:      s,
+				})
+			} else if cmd.Definition.StartWith != nil && *cmd.Definition.StartWith && strings.HasPrefix(m.Content, *cmd.Definition.Name) {
 				cmd.Handler(Message.Event{
 					Interaction: m,
 					Client:      s,

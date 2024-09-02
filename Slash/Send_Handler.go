@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	Md_Message "github.com/shibaisdog/opns/Message"
 )
 
 type Event struct {
@@ -47,19 +48,17 @@ type Webhook struct {
 	TTS             bool
 }
 
+type Response_Followup struct {
+	Message *discordgo.Message
+	Handler *Event
+}
+
 type Response_Message struct {
 	Message *discordgo.Message
 	Handler *Event
 }
 
-/*
-InteractionRespond creates the response to an interaction.
-Text      :  string
-Files     : *discordgo.File{}
-Embeds    : *discordgo.MessageEmbed{}
-Buttons   : []discordgo.Button
-Ephemeral :  bool
-*/
+// Send reply message
 func (h *Event) Reply(message Message) {
 	var Data = discordgo.InteractionResponseData{}
 	if message.Text != "" {
@@ -98,16 +97,47 @@ func (h *Event) Reply(message Message) {
 	}
 }
 
-func (h *Event) Response() *discordgo.Message {
-	response, err := h.Client.InteractionResponse(h.Interaction.Interaction)
-	if err != nil {
-		fmt.Println("error responseing: ", err)
+// Send a message to the channel sent by the user
+func (h *Event) Channel_Send(message Md_Message.Message) Response_Message {
+	var Data = discordgo.MessageSend{}
+	if message.Text != "" {
+		Data.Content = message.Text
 	}
-	return response
+	if len(message.Files) != 0 {
+		Data.Files = message.Files
+	}
+	if len(message.Embeds) != 0 {
+		Data.Embeds = message.Embeds
+	}
+	if len(message.Buttons) != 0 {
+		buttons := make([]discordgo.MessageComponent, len(message.Buttons))
+		for i, button := range message.Buttons {
+			buttons[i] = button
+		}
+		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: buttons})
+	}
+	if message.Ephemeral {
+		Data.Flags = discordgo.MessageFlagsEphemeral
+	}
+	if message.TTS {
+		Data.TTS = true
+	}
+	Data.AllowedMentions = message.AllowedMentions
+	Data.Reference = message.Reference
+	Data.StickerIDs = message.StickerIDs
+	Msg, err := h.Client.ChannelMessageSendComplex(h.Interaction.ChannelID, &Data)
+	if err != nil {
+		fmt.Println("error sending complex message,", err)
+	}
+	return Response_Message{
+		Message: Msg,
+		Handler: h,
+	}
 }
 
-func (h *Event) Edit_Response(message Edit_Message) *discordgo.Message {
-	var Data = discordgo.WebhookEdit{}
+// Edit a message that has already been sent
+func (h *Response_Message) Edit(message Md_Message.Edit_Message) Response_Message {
+	var Data = discordgo.MessageEdit{}
 	if message.Text != "" {
 		Data.Content = &(message.Text)
 	}
@@ -124,18 +154,67 @@ func (h *Event) Edit_Response(message Edit_Message) *discordgo.Message {
 		}
 		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: buttons})
 	}
-	if len(message.Attachments) != 0 {
-		Data.Attachments = &(message.Attachments)
+	if message.Ephemeral {
+		Data.Flags = discordgo.MessageFlagsEphemeral
 	}
-	Data.AllowedMentions = &(message.AllowedMentions)
-	response, err := h.Client.InteractionResponseEdit(h.Interaction.Interaction, &Data)
+	Data.ID = h.Message.ID
+	Data.Channel = h.Message.ChannelID
+	Data.AllowedMentions = message.AllowedMentions
+	Msg, err := h.Handler.Client.ChannelMessageEditComplex(&Data)
 	if err != nil {
-		fmt.Println("error responseing: ", err)
+		fmt.Println("error editing complex message,", err)
 	}
-	return response
+	return Response_Message{
+		Message: Msg,
+		Handler: h.Handler,
+	}
 }
 
-func (h *Event) Edit(message Edit_Message) *discordgo.Message {
+// Edit the message corresponding to the message ID.
+func (h *Event) Edit_ID(message Md_Message.Edit_Message, Message_ID string, Channel_ID string) Response_Message {
+	var Data = discordgo.MessageEdit{}
+	if message.Text != "" {
+		Data.Content = &(message.Text)
+	}
+	if len(message.Files) != 0 {
+		Data.Files = message.Files
+	}
+	if len(message.Embeds) != 0 {
+		Data.Embeds = &(message.Embeds)
+	}
+	if len(message.Buttons) != 0 {
+		buttons := make([]discordgo.MessageComponent, len(message.Buttons))
+		for i, button := range message.Buttons {
+			buttons[i] = button
+		}
+		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: buttons})
+	}
+	if message.Ephemeral {
+		Data.Flags = discordgo.MessageFlagsEphemeral
+	}
+	Data.ID = Message_ID
+	Data.Channel = Channel_ID
+	Data.AllowedMentions = message.AllowedMentions
+	Msg, err := h.Client.ChannelMessageEditComplex(&Data)
+	if err != nil {
+		fmt.Println("error editing complex message,", err)
+	}
+	return Response_Message{
+		Message: Msg,
+		Handler: h,
+	}
+}
+
+// Delete the sent reply message
+func (h *Event) Delete() {
+	err := h.Client.InteractionResponseDelete(h.Interaction.Interaction)
+	if err != nil {
+		fmt.Println("error deleteing: ", err)
+	}
+}
+
+// Edit the sent reply message
+func (h *Event) Edit(message Edit_Message) Response_Message {
 	var Data = discordgo.WebhookEdit{}
 	if message.Text != "" {
 		Data.Content = &(message.Text)
@@ -161,10 +240,14 @@ func (h *Event) Edit(message Edit_Message) *discordgo.Message {
 	if err != nil {
 		fmt.Println("error editing: ", err)
 	}
-	return edit_message
+	return Response_Message{
+		Message: edit_message,
+		Handler: h,
+	}
 }
 
-func (h *Event) Followup(message Webhook) Response_Message {
+// Follow up the sent reply message
+func (h *Event) Followup(message Webhook) Response_Followup {
 	var Data = discordgo.WebhookParams{}
 	if message.Text != "" {
 		Data.Content = message.Text
@@ -203,13 +286,14 @@ func (h *Event) Followup(message Webhook) Response_Message {
 	if err != nil {
 		fmt.Println("error following: ", err)
 	}
-	return Response_Message{
+	return Response_Followup{
 		Message: followup_message,
 		Handler: h,
 	}
 }
 
-func (h *Response_Message) Edit_Followup(message Edit_Message) *discordgo.Message {
+// Edit the sent followup message
+func (h *Response_Followup) Edit(message Edit_Message) *discordgo.Message {
 	var Data = discordgo.WebhookEdit{}
 	if message.Text != "" {
 		Data.Content = &(message.Text)
@@ -238,11 +322,50 @@ func (h *Response_Message) Edit_Followup(message Edit_Message) *discordgo.Messag
 	return edit_message
 }
 
-func (h *Response_Message) Delete_Followup() {
-	err := h.Handler.Client.FollowupMessageDelete(h.Handler.Interaction.Interaction, h.Message.MessageReference.MessageID)
+// Delete sent followup messages
+func (h *Response_Followup) Delete() {
+	err := h.Handler.Client.FollowupMessageDelete(h.Handler.Interaction.Interaction, h.Message.ID)
 	if err != nil {
 		fmt.Println("error deleteing: ", err)
 	}
+}
+
+/*
+func (h *Event) Response() *discordgo.Message {
+	response, err := h.Client.InteractionResponse(h.Interaction.Interaction)
+	if err != nil {
+		fmt.Println("error responseing: ", err)
+	}
+	return response
+}
+
+func (h *Event) Edit_Response(message Edit_Message) *discordgo.Message {
+	var Data = discordgo.WebhookEdit{}
+	if message.Text != "" {
+		Data.Content = &(message.Text)
+	}
+	if len(message.Files) != 0 {
+		Data.Files = message.Files
+	}
+	if len(message.Embeds) != 0 {
+		Data.Embeds = &(message.Embeds)
+	}
+	if len(message.Buttons) != 0 {
+		buttons := make([]discordgo.MessageComponent, len(message.Buttons))
+		for i, button := range message.Buttons {
+			buttons[i] = button
+		}
+		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: buttons})
+	}
+	if len(message.Attachments) != 0 {
+		Data.Attachments = &(message.Attachments)
+	}
+	Data.AllowedMentions = &(message.AllowedMentions)
+	response, err := h.Client.InteractionResponseEdit(h.Interaction.Interaction, &Data)
+	if err != nil {
+		fmt.Println("error responseing: ", err)
+	}
+	return response
 }
 
 func (h *Event) Delete_Response() {
@@ -251,10 +374,4 @@ func (h *Event) Delete_Response() {
 		fmt.Println("error deleteing: ", err)
 	}
 }
-
-func (h *Event) Delete() {
-	err := h.Client.InteractionResponseDelete(h.Interaction.Interaction)
-	if err != nil {
-		fmt.Println("error deleteing: ", err)
-	}
-}
+*/

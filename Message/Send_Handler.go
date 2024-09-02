@@ -35,7 +35,13 @@ type Edit_Message struct {
 	Ephemeral       bool
 }
 
-func (h *Event) Reply(message Message) *discordgo.Message {
+type Response_Message struct {
+	Message *discordgo.Message
+	Handler *Event
+}
+
+// Reply to messages sent by users
+func (h *Event) Reply(message Message) Response_Message {
 	var Data = discordgo.MessageSend{}
 	if message.Text != "" {
 		Data.Content = message.Text
@@ -70,10 +76,14 @@ func (h *Event) Reply(message Message) *discordgo.Message {
 	if err != nil {
 		fmt.Println("error sending complex message,", err)
 	}
-	return Msg
+	return Response_Message{
+		Message: Msg,
+		Handler: h,
+	}
 }
 
-func (h *Event) Channel_Send(message Message) *discordgo.Message {
+// Send a message to the channel sent by the user
+func (h *Event) Channel_Send(message Message) Response_Message {
 	var Data = discordgo.MessageSend{}
 	if message.Text != "" {
 		Data.Content = message.Text
@@ -104,10 +114,14 @@ func (h *Event) Channel_Send(message Message) *discordgo.Message {
 	if err != nil {
 		fmt.Println("error sending complex message,", err)
 	}
-	return Msg
+	return Response_Message{
+		Message: Msg,
+		Handler: h,
+	}
 }
 
-func (h *Event) Edit(message Edit_Message) *discordgo.Message {
+// Edit a message that has already been sent
+func (h *Response_Message) Edit(message Edit_Message) Response_Message {
 	var Data = discordgo.MessageEdit{}
 	if message.Text != "" {
 		Data.Content = &(message.Text)
@@ -128,17 +142,21 @@ func (h *Event) Edit(message Edit_Message) *discordgo.Message {
 	if message.Ephemeral {
 		Data.Flags = discordgo.MessageFlagsEphemeral
 	}
-	Data.ID = h.Interaction.ID
-	Data.Channel = h.Interaction.ChannelID
+	Data.ID = h.Message.ID
+	Data.Channel = h.Message.ChannelID
 	Data.AllowedMentions = message.AllowedMentions
-	Msg, err := h.Client.ChannelMessageEditComplex(&Data)
+	Msg, err := h.Handler.Client.ChannelMessageEditComplex(&Data)
 	if err != nil {
 		fmt.Println("error editing complex message,", err)
 	}
-	return Msg
+	return Response_Message{
+		Message: Msg,
+		Handler: h.Handler,
+	}
 }
 
-func (h *Event) Edit_ID(message Edit_Message, Message_ID string, Channel_ID string) *discordgo.Message {
+// Edit the message corresponding to the message ID.
+func (h *Event) Edit(message Edit_Message, Message_ID string, Channel_ID string) Response_Message {
 	var Data = discordgo.MessageEdit{}
 	if message.Text != "" {
 		Data.Content = &(message.Text)
@@ -166,5 +184,8 @@ func (h *Event) Edit_ID(message Edit_Message, Message_ID string, Channel_ID stri
 	if err != nil {
 		fmt.Println("error editing complex message,", err)
 	}
-	return Msg
+	return Response_Message{
+		Message: Msg,
+		Handler: h,
+	}
 }
