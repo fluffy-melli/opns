@@ -7,7 +7,7 @@ type Ready struct {
 	Types  *discordgo.Ready
 }
 
-func Wait_Ready(Client *discordgo.Session, Func func(Ready)) {
+func On_Ready(Client *discordgo.Session, Func func(Ready)) {
 	Client.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		Func(Ready{
 			Client: s,

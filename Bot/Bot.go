@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/shibaisdog/opns/Command"
+	"github.com/shibaisdog/opns/Event"
 	"github.com/shibaisdog/opns/Message"
 	"github.com/shibaisdog/opns/Slash"
 )
@@ -82,6 +83,9 @@ func (bot *Bot) Upload_Slash_Command() {
 		log.Println("Create Command: ", cmd.Definition.Name)
 	}
 	bot.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		if i.Type == discordgo.InteractionMessageComponent {
+			return
+		}
 		respond := false
 		for _, cmd := range Command.Slash_CommandList {
 			if i.Type != discordgo.InteractionApplicationCommand {
@@ -125,4 +129,33 @@ func (bot *Bot) Upload_Message_Command() {
 			}
 		})
 	}
+}
+
+// Register the registered Button-Interaction in Discord.
+func (bot *Bot) Upload_Event_Button() {
+	if bot.Session.State.User == nil {
+		log.Fatalf("Error: discord session state user is nil")
+		return
+	}
+	for _, cmd := range Event.Button_Interaction_List {
+		bot.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			if i.Type == discordgo.InteractionMessageComponent {
+				data := i.MessageComponentData()
+				if data.CustomID == cmd.CustomID {
+					cmd.Handler(Event.Button{
+						Interaction: i,
+						Client:      s,
+					})
+				}
+			}
+		})
+	}
+}
+
+// All Setting
+func (bot *Bot) Setup() {
+	bot.Upload_Event_Button()
+	////////////////////////////
+	bot.Upload_Message_Command()
+	bot.Upload_Slash_Command()
 }
