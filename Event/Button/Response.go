@@ -1,4 +1,4 @@
-package Event
+package Button
 
 import (
 	"log"
@@ -20,7 +20,7 @@ type Message struct {
 	TTS             bool
 }
 
-func (bi *Button) Respond(message Message) {
+func (bi *Event) Respond(message Message) {
 	var Data = discordgo.InteractionResponseData{}
 	if message.Text != "" {
 		Data.Content = message.Text

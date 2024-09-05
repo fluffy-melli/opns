@@ -11,9 +11,9 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/shibaisdog/opns/Command"
-	"github.com/shibaisdog/opns/Event"
-	"github.com/shibaisdog/opns/Message"
-	"github.com/shibaisdog/opns/Slash"
+	"github.com/shibaisdog/opns/Command/Message"
+	"github.com/shibaisdog/opns/Command/Slash"
+	"github.com/shibaisdog/opns/Event/Button"
 )
 
 type Bot struct {
@@ -137,12 +137,12 @@ func (bot *Bot) Upload_Event_Button() {
 		log.Fatalf("Error: discord session state user is nil")
 		return
 	}
-	for _, cmd := range Event.Button_Interaction_List {
+	for _, cmd := range Button.Button_Interaction_List {
 		bot.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			if i.Type == discordgo.InteractionMessageComponent {
 				data := i.MessageComponentData()
 				if data.CustomID == cmd.CustomID {
-					cmd.Handler(Event.Button{
+					cmd.Handler(Button.Event{
 						Interaction: i,
 						Client:      s,
 					})
@@ -154,8 +154,9 @@ func (bot *Bot) Upload_Event_Button() {
 
 // All Setting
 func (bot *Bot) Setup() {
-	bot.Upload_Event_Button()
 	////////////////////////////
 	bot.Upload_Message_Command()
 	bot.Upload_Slash_Command()
+	////////////////////////////
+	bot.Upload_Event_Button()
 }

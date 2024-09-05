@@ -3,7 +3,7 @@ package Command
 import (
 	"log"
 
-	"github.com/shibaisdog/opns/Message"
+	"github.com/shibaisdog/opns/Command/Message"
 )
 
 type Message_Definition struct {

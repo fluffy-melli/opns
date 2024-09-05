@@ -5,7 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	Md_Message "github.com/shibaisdog/opns/Message"
+	Md_Message "github.com/shibaisdog/opns/Command/Message"
 )
 
 // Send reply message

@@ -1,4 +1,4 @@
-package Event
+package Button
 
 import (
 	"log"
@@ -6,26 +6,26 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-type Button struct {
+type Event struct {
 	Client      *discordgo.Session
 	Interaction *discordgo.InteractionCreate
 }
 
-type Button_Interaction struct {
+type OnClick struct {
 	CustomID string
-	Handler  func(Button)
+	Handler  func(Event)
 }
 
-var Button_Interaction_List = []Button_Interaction{}
+var Button_Interaction_List = []OnClick{}
 
-func Create_Button_Interaction(CustomID string, Handler func(Button)) Button_Interaction {
-	return Button_Interaction{
+func Handler(CustomID string, Handler func(Event)) OnClick {
+	return OnClick{
 		CustomID: CustomID,
 		Handler:  Handler,
 	}
 }
 
-func (bi *Button_Interaction) Register() {
+func (bi *OnClick) Register() {
 	if bi.CustomID == "" || bi.Handler == nil {
 		log.Fatalf("Warning: Button_Interaction is nil")
 		return
