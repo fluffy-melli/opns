@@ -6,8 +6,8 @@ import (
 	"example/src/commands"
 
 	"github.com/shibaisdog/opns/Bot"
+	"github.com/shibaisdog/opns/Bot/Shard"
 	"github.com/shibaisdog/opns/Event"
-	"github.com/shibaisdog/opns/Shard"
 )
 
 func main() {

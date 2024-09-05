@@ -5,7 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/shibaisdog/opns/Command"
-	"github.com/shibaisdog/opns/Message"
+	"github.com/shibaisdog/opns/Command/Message"
 )
 
 var PING_MSG = Command.Setup_Message{

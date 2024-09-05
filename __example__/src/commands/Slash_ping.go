@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/shibaisdog/opns/Command"
-	"github.com/shibaisdog/opns/Slash"
+	"github.com/shibaisdog/opns/Command/Slash"
 
 	"github.com/bwmarrin/discordgo"
 )

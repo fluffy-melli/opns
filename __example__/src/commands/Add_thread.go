@@ -1,20 +1,24 @@
 package commands
 
 import (
+	"strings"
+
 	"github.com/bwmarrin/discordgo"
-	"github.com/shibaisdog/opns/Channel"
+	"github.com/shibaisdog/opns/Channel/Thread"
 	"github.com/shibaisdog/opns/Command"
-	"github.com/shibaisdog/opns/Event"
-	"github.com/shibaisdog/opns/Message"
+	"github.com/shibaisdog/opns/Command/Message"
+	"github.com/shibaisdog/opns/Event/Button"
 )
 
 var TD = Command.Setup_Message{
 	Definition: &Command.Message_Definition{
-		Name: "!thread",
+		Name:      "!thread",
+		StartWith: true,
 	},
 	Handler: func(hlr Message.Event) {
-		Thread := Channel.Thread_Creaft(hlr.Client, "New Thread", 4320, hlr.Interaction.ChannelID, hlr.Interaction.ID)
-		hlr.Channel_Send_ID(Thread.ID, Message.Message{
+		Thread_Names := strings.Split(hlr.Interaction.Content, " ")
+		thread := Thread.Creaft(hlr.Client, Thread_Names[1], 4320, hlr.Interaction.ChannelID, hlr.Interaction.ID)
+		hlr.Channel_Send_ID(thread.ID, Message.Message{
 			Embeds: []*discordgo.MessageEmbed{
 				{
 					Title: "Creaft Thread.",
@@ -22,8 +26,8 @@ var TD = Command.Setup_Message{
 			},
 			Buttons: []discordgo.Button{
 				{
-					Label:    "Click Me!",
-					CustomID: "Button_Click_0",
+					Label:    "쓰레드 닫기",
+					CustomID: "Close_Thread",
 					Style:    discordgo.DangerButton,
 				},
 			},
@@ -31,11 +35,12 @@ var TD = Command.Setup_Message{
 	},
 }
 
-var TD_Event = Event.Button_Interaction{
-	CustomID: "Button_Click_0",
-	Handler: func(b Event.Button) {
-		b.Respond(Event.Message{
-			Text: "버튼을 클릭했어요!",
+var TD_Event = Button.OnClick{
+	CustomID: "Close_Thread",
+	Handler: func(b Button.Event) {
+		b.Respond(Button.Message{
+			Text: "이 쓰레드는 닫혔어요!",
 		})
+		Thread.Lock(b.Client, b.Interaction.ChannelID)
 	},
 }
