@@ -113,9 +113,6 @@ func (bot *Bot) Upload_Message_Command() {
 	}
 	for _, cmd := range Command.Message_CommandList {
 		bot.Session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-			if cmd.Definition.Name == "" {
-				log.Fatalln("The command name does not exist")
-			}
 			if m.Content == cmd.Definition.Name {
 				cmd.Handler(Message.Event{
 					Interaction: m,
