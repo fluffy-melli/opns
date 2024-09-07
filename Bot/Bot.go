@@ -69,6 +69,13 @@ func (bot *Bot) AddHandler(handler interface{}) func() {
 	return bot.Session.AddHandler(handler)
 }
 
+func (bot *Bot) Reset_Slash_Command() {
+	_, err := bot.Session.ApplicationCommandBulkOverwrite(bot.Session.State.User.ID, "", nil)
+	if err != nil {
+		log.Fatalf("Error clearing commands: %v", err)
+	}
+}
+
 // Register the registered Slash-Command in Discord.
 func (bot *Bot) Upload_Slash_Command() {
 	if bot.Session.State.User == nil {
@@ -151,6 +158,7 @@ func (bot *Bot) Upload_Event_Button() {
 
 // All Setting
 func (bot *Bot) Setup() {
+	bot.Reset_Slash_Command()
 	////////////////////////////
 	bot.Upload_Message_Command()
 	bot.Upload_Slash_Command()
