@@ -25,6 +25,13 @@ func Channel(Client *discordgo.Session, ChannelID string, message Message) Respo
 		}
 		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: buttons})
 	}
+	if len(message.SelectMenu) != 0 {
+		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
+		for i, selectd := range message.SelectMenu {
+			selects[i] = selectd
+		}
+		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: selects})
+	}
 	if message.Ephemeral {
 		Data.Flags = discordgo.MessageFlagsEphemeral
 	}

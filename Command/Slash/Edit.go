@@ -27,6 +27,13 @@ func (h *Response_Message) Edit(message Md_Message.Edit_Message) Response_Messag
 		}
 		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: buttons})
 	}
+	if len(message.SelectMenu) != 0 {
+		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
+		for i, selectd := range message.SelectMenu {
+			selects[i] = selectd
+		}
+		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: selects})
+	}
 	if message.Ephemeral {
 		Data.Flags = discordgo.MessageFlagsEphemeral
 	}
@@ -62,6 +69,13 @@ func (h *Event) Edit_ID(message Md_Message.Edit_Message, Message_ID string, Chan
 		}
 		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: buttons})
 	}
+	if len(message.SelectMenu) != 0 {
+		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
+		for i, selectd := range message.SelectMenu {
+			selects[i] = selectd
+		}
+		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: selects})
+	}
 	if message.Ephemeral {
 		Data.Flags = discordgo.MessageFlagsEphemeral
 	}
@@ -96,6 +110,13 @@ func (h *Event) Edit(message Edit_Message) Response_Message {
 			buttons[i] = button
 		}
 		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: buttons})
+	}
+	if len(message.SelectMenu) != 0 {
+		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
+		for i, selectd := range message.SelectMenu {
+			selects[i] = selectd
+		}
+		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: selects})
 	}
 	if len(message.Attachments) != 0 {
 		Data.Attachments = &(message.Attachments)

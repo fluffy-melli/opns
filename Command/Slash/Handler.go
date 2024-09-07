@@ -10,15 +10,16 @@ type Event struct {
 }
 
 type Message struct {
-	Text      string
-	Files     []*discordgo.File
-	Embeds    []*discordgo.MessageEmbed
-	Buttons   []discordgo.Button
-	Choices   []*discordgo.ApplicationCommandOptionChoice
-	Ephemeral bool
-	CustomID  string
-	Title     string
-	TTS       bool
+	Text       string
+	Files      []*discordgo.File
+	Embeds     []*discordgo.MessageEmbed
+	Buttons    []discordgo.Button
+	SelectMenu []discordgo.SelectMenu
+	Choices    []*discordgo.ApplicationCommandOptionChoice
+	Ephemeral  bool
+	CustomID   string
+	Title      string
+	TTS        bool
 }
 
 type Edit_Message struct {
@@ -26,6 +27,7 @@ type Edit_Message struct {
 	Files           []*discordgo.File
 	Embeds          []*discordgo.MessageEmbed
 	Buttons         []discordgo.Button
+	SelectMenu      []discordgo.SelectMenu
 	Attachments     []*discordgo.MessageAttachment
 	AllowedMentions discordgo.MessageAllowedMentions
 }
@@ -35,6 +37,7 @@ type Webhook struct {
 	Files           []*discordgo.File
 	Embeds          []*discordgo.MessageEmbed
 	Buttons         []discordgo.Button
+	SelectMenu      []discordgo.SelectMenu
 	Attachments     []*discordgo.MessageAttachment
 	AllowedMentions *discordgo.MessageAllowedMentions
 	Ephemeral       bool

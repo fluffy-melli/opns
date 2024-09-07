@@ -25,6 +25,13 @@ func (h *Event) Reply(message Message) Response_Message {
 		}
 		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: buttons})
 	}
+	if len(message.SelectMenu) != 0 {
+		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
+		for i, selectd := range message.SelectMenu {
+			selects[i] = selectd
+		}
+		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: selects})
+	}
 	if message.Ephemeral {
 		Data.Flags = discordgo.MessageFlagsEphemeral
 	}
@@ -63,6 +70,13 @@ func (h *Event) Channel_Send(message Message) Response_Message {
 		}
 		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: buttons})
 	}
+	if len(message.SelectMenu) != 0 {
+		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
+		for i, selectd := range message.SelectMenu {
+			selects[i] = selectd
+		}
+		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: selects})
+	}
 	if message.Ephemeral {
 		Data.Flags = discordgo.MessageFlagsEphemeral
 	}
@@ -100,6 +114,13 @@ func (h *Event) Channel_Send_ID(ChannelID string, message Message) Response_Mess
 			buttons[i] = button
 		}
 		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: buttons})
+	}
+	if len(message.SelectMenu) != 0 {
+		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
+		for i, selectd := range message.SelectMenu {
+			selects[i] = selectd
+		}
+		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: selects})
 	}
 	if message.Ephemeral {
 		Data.Flags = discordgo.MessageFlagsEphemeral

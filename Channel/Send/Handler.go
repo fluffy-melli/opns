@@ -9,6 +9,7 @@ type Message struct {
 	Files           []*discordgo.File
 	Embeds          []*discordgo.MessageEmbed
 	Buttons         []discordgo.Button
+	SelectMenu      []discordgo.SelectMenu
 	Reference       *discordgo.MessageReference
 	AllowedMentions *discordgo.MessageAllowedMentions
 	StickerIDs      []string
@@ -23,6 +24,7 @@ type Edit_Message struct {
 	Files           []*discordgo.File
 	Embeds          []*discordgo.MessageEmbed
 	Buttons         []discordgo.Button
+	SelectMenu      []discordgo.SelectMenu
 	Attachments     *[]*discordgo.MessageAttachment
 	AllowedMentions *discordgo.MessageAllowedMentions
 	Ephemeral       bool
