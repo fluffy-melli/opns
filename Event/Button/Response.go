@@ -11,6 +11,7 @@ type Message struct {
 	Files           []*discordgo.File
 	Embeds          []*discordgo.MessageEmbed
 	Buttons         []discordgo.Button
+	SelectMenu      []discordgo.SelectMenu
 	AllowedMentions *discordgo.MessageAllowedMentions
 	Attachments     *[]*discordgo.MessageAttachment
 	Choices         []*discordgo.ApplicationCommandOptionChoice
@@ -37,6 +38,13 @@ func (bi *Event) Respond(message Message) {
 			buttons[i] = button
 		}
 		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: buttons})
+	}
+	if len(message.SelectMenu) != 0 {
+		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
+		for i, selectd := range message.SelectMenu {
+			selects[i] = selectd
+		}
+		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: selects})
 	}
 	if len(message.Choices) != 0 {
 		Data.Choices = message.Choices
