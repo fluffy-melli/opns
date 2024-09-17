@@ -1,11 +1,13 @@
 package Slash
 
 import (
-	"log"
+	"errors"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 
 	Md_Message "github.com/shibaisdog/opns/Command/Message"
+	"github.com/shibaisdog/opns/Error"
 )
 
 // Send reply message
@@ -50,7 +52,12 @@ func (h *Event) Reply(message Message) {
 		Data: &Data,
 	})
 	if err != nil {
-		log.Println("error responding: ", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error responding > '%v'", err)),
+			Client:    h.Client,
+			GuildID:   h.Interaction.GuildID,
+			ChannelID: h.Interaction.ChannelID,
+		}, false)
 	}
 }
 
@@ -91,7 +98,12 @@ func (h *Event) Channel_Send(message Md_Message.Message) Response_Message {
 	Data.StickerIDs = message.StickerIDs
 	Msg, err := h.Client.ChannelMessageSendComplex(h.Interaction.ChannelID, &Data)
 	if err != nil {
-		log.Println("error sending complex message,", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error sending complex message > '%v'", err)),
+			Client:    h.Client,
+			GuildID:   h.Interaction.GuildID,
+			ChannelID: h.Interaction.ChannelID,
+		}, false)
 	}
 	return Response_Message{
 		Message: Msg,
@@ -144,7 +156,12 @@ func (h *Event) Followup(message Webhook) Response_Followup {
 	Data.AllowedMentions = message.AllowedMentions
 	followup_message, err := h.Client.FollowupMessageCreate(h.Interaction.Interaction, Wait, &Data)
 	if err != nil {
-		log.Println("error following: ", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error following > '%v'", err)),
+			Client:    h.Client,
+			GuildID:   h.Interaction.GuildID,
+			ChannelID: h.Interaction.ChannelID,
+		}, false)
 	}
 	return Response_Followup{
 		Message: followup_message,

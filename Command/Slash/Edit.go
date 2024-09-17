@@ -1,11 +1,13 @@
 package Slash
 
 import (
-	"log"
+	"errors"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 
 	Md_Message "github.com/shibaisdog/opns/Command/Message"
+	"github.com/shibaisdog/opns/Error"
 )
 
 // Edit a message that has already been sent
@@ -42,7 +44,12 @@ func (h *Response_Message) Edit(message Md_Message.Edit_Message) Response_Messag
 	Data.AllowedMentions = message.AllowedMentions
 	Msg, err := h.Handler.Client.ChannelMessageEditComplex(&Data)
 	if err != nil {
-		log.Println("error editing complex message,", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error editing complex message > '%v'", err)),
+			Client:    h.Handler.Client,
+			GuildID:   h.Message.GuildID,
+			ChannelID: h.Message.ChannelID,
+		}, false)
 	}
 	return Response_Message{
 		Message: Msg,
@@ -84,7 +91,12 @@ func (h *Event) Edit_ID(message Md_Message.Edit_Message, Message_ID string, Chan
 	Data.AllowedMentions = message.AllowedMentions
 	Msg, err := h.Client.ChannelMessageEditComplex(&Data)
 	if err != nil {
-		log.Println("error editing complex message,", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error editing complex message > '%v'", err)),
+			Client:    h.Client,
+			GuildID:   h.Interaction.GuildID,
+			ChannelID: h.Interaction.ChannelID,
+		}, false)
 	}
 	return Response_Message{
 		Message: Msg,
@@ -124,7 +136,12 @@ func (h *Event) Edit(message Edit_Message) Response_Message {
 	Data.AllowedMentions = &(message.AllowedMentions)
 	edit_message, err := h.Client.InteractionResponseEdit(h.Interaction.Interaction, &Data)
 	if err != nil {
-		log.Println("error editing: ", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error editing complex message > '%v'", err)),
+			Client:    h.Client,
+			GuildID:   h.Interaction.GuildID,
+			ChannelID: h.Interaction.ChannelID,
+		}, false)
 	}
 	return Response_Message{
 		Message: edit_message,
@@ -157,7 +174,12 @@ func (h *Response_Followup) Edit(message Edit_Message) *discordgo.Message {
 	Data.AllowedMentions = &(message.AllowedMentions)
 	edit_message, err := h.Handler.Client.FollowupMessageEdit(h.Handler.Interaction.Interaction, h.Message.ID, &Data)
 	if err != nil {
-		log.Println("error edit_following: ", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error editing complex message > '%v'", err)),
+			Client:    h.Handler.Client,
+			GuildID:   h.Message.GuildID,
+			ChannelID: h.Message.ChannelID,
+		}, false)
 	}
 	return edit_message
 }

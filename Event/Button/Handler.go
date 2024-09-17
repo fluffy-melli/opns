@@ -1,9 +1,10 @@
 package Button
 
 import (
-	"log"
+	"errors"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/shibaisdog/opns/Error"
 	"github.com/shibaisdog/opns/Traffic"
 )
 
@@ -29,7 +30,9 @@ func Handler(CustomID string, Handler func(Event)) OnClick {
 
 func (bi *OnClick) Register() {
 	if bi.CustomID == "" || bi.Handler == nil {
-		log.Fatalf("Warning: Button_Interaction is nil")
+		Error.New(Error.Err{
+			Msg: errors.New("warning: Message command is nil"),
+		}, true)
 		return
 	}
 	Button_Interaction_List = append(Button_Interaction_List, *bi)

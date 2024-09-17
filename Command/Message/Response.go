@@ -1,9 +1,11 @@
 package Message
 
 import (
-	"log"
+	"errors"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/shibaisdog/opns/Error"
 )
 
 // Reply to messages sent by users
@@ -43,7 +45,12 @@ func (h *Event) Reply(message Message) Response_Message {
 	Data.Reference = h.Reference()
 	Msg, err := h.Client.ChannelMessageSendComplex(h.Interaction.ChannelID, &Data)
 	if err != nil {
-		log.Println("error sending complex message,", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error sending complex message > '%v'", err)),
+			Client:    h.Client,
+			GuildID:   h.Interaction.GuildID,
+			ChannelID: h.Interaction.ChannelID,
+		}, false)
 	}
 	return Response_Message{
 		Message: Msg,
@@ -88,7 +95,12 @@ func (h *Event) Channel_Send(message Message) Response_Message {
 	Data.StickerIDs = message.StickerIDs
 	Msg, err := h.Client.ChannelMessageSendComplex(h.Interaction.ChannelID, &Data)
 	if err != nil {
-		log.Println("error sending complex message,", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error sending complex message > '%v'", err)),
+			Client:    h.Client,
+			GuildID:   h.Interaction.GuildID,
+			ChannelID: h.Interaction.ChannelID,
+		}, false)
 	}
 	return Response_Message{
 		Message: Msg,
@@ -133,7 +145,12 @@ func (h *Event) Channel_Send_ID(ChannelID string, message Message) Response_Mess
 	Data.StickerIDs = message.StickerIDs
 	Msg, err := h.Client.ChannelMessageSendComplex(ChannelID, &Data)
 	if err != nil {
-		log.Println("error sending complex message,", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error sending complex message > '%v'", err)),
+			Client:    h.Client,
+			GuildID:   h.Interaction.GuildID,
+			ChannelID: h.Interaction.ChannelID,
+		}, false)
 	}
 	return Response_Message{
 		Message: Msg,

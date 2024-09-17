@@ -1,9 +1,12 @@
 package Thread
 
 import (
+	"errors"
+	"fmt"
 	"log"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/shibaisdog/opns/Error"
 )
 
 func Creaft(Client *discordgo.Session, ThreadName string, Duration int, ChannelID string, MessageID string) *discordgo.Channel {
@@ -12,7 +15,16 @@ func Creaft(Client *discordgo.Session, ThreadName string, Duration int, ChannelI
 		AutoArchiveDuration: Duration,
 	})
 	if err != nil {
-		log.Fatalln("Failed to create thread :", err)
+		threadChannel, err := Client.Channel(ChannelID)
+		if err != nil {
+			log.Printf("error failed to create thread > '%v'", err)
+		}
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error failed to create thread > '%v'", err)),
+			Client:    Client,
+			GuildID:   threadChannel.GuildID,
+			ChannelID: threadChannel.ParentID,
+		}, false)
 	}
 	return thread
 }
@@ -24,7 +36,16 @@ func Lock(Client *discordgo.Session, ThreadID string) {
 		Locked:   &val,
 	})
 	if err != nil {
-		log.Fatal("Error locking the thread: ", err)
+		threadChannel, err := Client.Channel(ThreadID)
+		if err != nil {
+			log.Printf("error locking the thread > '%v'", err)
+		}
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error failed to create thread > '%v'", err)),
+			Client:    Client,
+			GuildID:   threadChannel.GuildID,
+			ChannelID: threadChannel.ParentID,
+		}, false)
 		return
 	}
 }
@@ -32,7 +53,17 @@ func Lock(Client *discordgo.Session, ThreadID string) {
 func Permission(Client *discordgo.Session, ThreadID string, roleID string, OverWrite discordgo.PermissionOverwriteType, Allow int64, Permission int64) {
 	err := Client.ChannelPermissionSet(ThreadID, roleID, OverWrite, Allow, Permission)
 	if err != nil {
-		log.Fatal("Error setting channel permissions: ", err)
+		threadChannel, err := Client.Channel(ThreadID)
+		if err != nil {
+			log.Printf("error locking the thread > '%v'", err)
+		}
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error setting channel permissions > '%v'", err)),
+			Client:    Client,
+			GuildID:   threadChannel.GuildID,
+			ChannelID: threadChannel.ParentID,
+		}, false)
+
 		return
 	}
 }

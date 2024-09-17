@@ -1,9 +1,11 @@
 package Button
 
 import (
-	"log"
+	"errors"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/shibaisdog/opns/Error"
 )
 
 type Message struct {
@@ -62,6 +64,11 @@ func (bi *Event) Respond(message Message) {
 		Data: &Data,
 	})
 	if err != nil {
-		log.Printf("error sending interaction response: %v", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error sending interaction response > '%v'", err)),
+			Client:    bi.Client,
+			GuildID:   bi.Interaction.GuildID,
+			ChannelID: bi.Interaction.ChannelID,
+		}, false)
 	}
 }

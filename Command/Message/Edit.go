@@ -1,9 +1,11 @@
 package Message
 
 import (
-	"log"
+	"errors"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/shibaisdog/opns/Error"
 )
 
 // Edit a message that has already been sent
@@ -40,7 +42,12 @@ func (h *Response_Message) Edit(message Edit_Message) Response_Message {
 	Data.AllowedMentions = message.AllowedMentions
 	Msg, err := h.Handler.Client.ChannelMessageEditComplex(&Data)
 	if err != nil {
-		log.Println("error editing complex message,", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error editing complex message > '%v'", err)),
+			Client:    h.Handler.Client,
+			GuildID:   h.Message.GuildID,
+			ChannelID: h.Message.ChannelID,
+		}, false)
 	}
 	return Response_Message{
 		Message: Msg,
@@ -82,7 +89,12 @@ func (h *Event) Edit(message Edit_Message, Message_ID string, Channel_ID string)
 	Data.AllowedMentions = message.AllowedMentions
 	Msg, err := h.Client.ChannelMessageEditComplex(&Data)
 	if err != nil {
-		log.Println("error editing complex message,", err)
+		Error.New(Error.Err{
+			Msg:       errors.New("" + fmt.Sprintf("error editing complex message > '%v'", err)),
+			Client:    h.Client,
+			GuildID:   h.Interaction.GuildID,
+			ChannelID: h.Interaction.ChannelID,
+		}, false)
 	}
 	return Response_Message{
 		Message: Msg,

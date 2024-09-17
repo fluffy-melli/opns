@@ -1,10 +1,11 @@
 package Shard
 
 import (
-	"log"
+	"errors"
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/shibaisdog/opns/Error"
 )
 
 // Set up shards automatically
@@ -23,7 +24,9 @@ func Manager(Token string, ShardCount int) []Shard {
 func Env_Manager(key string, ShardCount int) []Shard {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalln("Error loading .env file")
+		Error.New(Error.Err{
+			Msg: errors.New("error loading .env file"),
+		}, true)
 	}
 	if ShardCount > 0 {
 		for i := 0; i < ShardCount; i++ {

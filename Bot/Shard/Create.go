@@ -1,9 +1,12 @@
 package Shard
 
 import (
+	"errors"
+	"fmt"
 	"log"
 
 	"github.com/shibaisdog/opns/Bot"
+	"github.com/shibaisdog/opns/Error"
 )
 
 type Shard struct {
@@ -21,7 +24,10 @@ func Create(Token string, ShardID int, Shard_Max int) Shard {
 	if Shard_Max <= 0 {
 		bot, err := Client.Session.GatewayBot()
 		if err != nil {
-			log.Fatalln("error getting GatewayBot info,", err)
+			Error.New(Error.Err{
+				Msg:    errors.New("" + fmt.Sprintf("error getting GatewayBot info > %v", err)),
+				Client: Client.Session,
+			}, true)
 		}
 		ShardCount = (bot.Shards + 999) / 1000
 	} else {

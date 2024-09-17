@@ -1,6 +1,8 @@
 package Bot
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -13,6 +15,7 @@ import (
 	"github.com/shibaisdog/opns/Command"
 	"github.com/shibaisdog/opns/Command/Message"
 	"github.com/shibaisdog/opns/Command/Slash"
+	"github.com/shibaisdog/opns/Error"
 	"github.com/shibaisdog/opns/Event/Button"
 	"github.com/shibaisdog/opns/Traffic"
 )
@@ -21,7 +24,9 @@ import (
 func Create(Token string) Bot {
 	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {
-		log.Fatalln("error creating Discord session,", err)
+		Error.New(Error.Err{
+			Msg: errors.New("" + fmt.Sprintf("error creating Discord session > %v", err)),
+		}, true)
 	}
 	return Bot{
 		Traffic: &Traffic.Count{
@@ -38,11 +43,15 @@ func Create(Token string) Bot {
 func Env_Create(env_key string) Bot {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalln("Error loading .env file")
+		Error.New(Error.Err{
+			Msg: errors.New("error loading .env file"),
+		}, true)
 	}
 	dg, err := discordgo.New("Bot " + os.Getenv(env_key))
 	if err != nil {
-		log.Fatalln("error creating Discord session,", err)
+		Error.New(Error.Err{
+			Msg: errors.New("" + fmt.Sprintf("error creating Discord session > %v", err)),
+		}, true)
 	}
 	return Bot{
 		Traffic: &Traffic.Count{
@@ -68,7 +77,9 @@ func Signal() {
 func (bot *Bot) Connect() {
 	err := bot.Session.Open()
 	if err != nil {
-		log.Fatalln("error opening connection,", err)
+		Error.New(Error.Err{
+			Msg: errors.New("" + fmt.Sprintf("error connection > %v", err)),
+		}, true)
 		return
 	}
 }
@@ -81,20 +92,26 @@ func (bot *Bot) AddHandler(handler interface{}) func() {
 func (bot *Bot) Reset_Slash_Command() {
 	_, err := bot.Session.ApplicationCommandBulkOverwrite(bot.Session.State.User.ID, "", nil)
 	if err != nil {
-		log.Fatalf("Error clearing commands: %v", err)
+		Error.New(Error.Err{
+			Msg: errors.New("" + fmt.Sprintf("error clearing commands > %v", err)),
+		}, true)
 	}
 }
 
 // Register the registered Slash-Command in Discord.
 func (bot *Bot) Upload_Slash_Command() {
 	if bot.Session.State.User == nil {
-		log.Fatalf("Error: discord session state user is nil")
+		Error.New(Error.Err{
+			Msg: errors.New("error discord session state user is nil"),
+		}, true)
 		return
 	}
 	for _, cmd := range Command.Slash_CommandList {
 		_, err := bot.Session.ApplicationCommandCreate(bot.Session.State.User.ID, "", cmd.Definition)
 		if err != nil {
-			log.Fatalf("Cannot create command: '%v' err: %v", cmd.Definition.Name, err)
+			Error.New(Error.Err{
+				Msg: errors.New("" + fmt.Sprintf("error cannot create command: '%v' err: %v", cmd.Definition.Name, err)),
+			}, true)
 		}
 		log.Println("Create Command: ", cmd.Definition.Name)
 	}
@@ -118,7 +135,9 @@ func (bot *Bot) Upload_Slash_Command() {
 			}
 		}
 		if !respond {
-			log.Fatalf("Unknown Command: '%v'", i.ApplicationCommandData().Name)
+			Error.New(Error.Err{
+				Msg: errors.New("" + fmt.Sprintf("error unknown Command: '%v'", i.ApplicationCommandData().Name)),
+			}, false)
 		}
 	})
 }
@@ -126,7 +145,9 @@ func (bot *Bot) Upload_Slash_Command() {
 // Register the registered Message-Command in Discord.
 func (bot *Bot) Upload_Message_Command() {
 	if bot.Session.State.User == nil {
-		log.Fatalf("Error: discord session state user is nil")
+		Error.New(Error.Err{
+			Msg: errors.New("error discord session state user is nil"),
+		}, true)
 		return
 	}
 	bot.Traffic.Message += 1
@@ -152,7 +173,9 @@ func (bot *Bot) Upload_Message_Command() {
 // Register the registered Button-Interaction in Discord.
 func (bot *Bot) Upload_Event_Button() {
 	if bot.Session.State.User == nil {
-		log.Fatalf("Error: discord session state user is nil")
+		Error.New(Error.Err{
+			Msg: errors.New("error discord session state user is nil"),
+		}, true)
 		return
 	}
 	bot.Traffic.Event += 1

@@ -1,9 +1,10 @@
 package Command
 
 import (
-	"log"
+	"errors"
 
 	"github.com/shibaisdog/opns/Command/Message"
+	"github.com/shibaisdog/opns/Error"
 )
 
 type Message_Definition struct {
@@ -22,7 +23,9 @@ var Message_CommandList = []Setup_Message{}
 // Register the message_command
 func (S *Setup_Message) Register() {
 	if S.Definition == nil || S.Handler == nil {
-		log.Fatalf("Warning: Message command is nil")
+		Error.New(Error.Err{
+			Msg: errors.New("warning: Message command is nil"),
+		}, true)
 		return
 	}
 	Message_CommandList = append(Message_CommandList, *S)
