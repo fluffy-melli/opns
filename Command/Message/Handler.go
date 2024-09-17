@@ -2,9 +2,11 @@ package Message
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/shibaisdog/opns/Traffic"
 )
 
 type Event struct {
+	Traffic     *Traffic.Count
 	Interaction *discordgo.MessageCreate
 	Client      *discordgo.Session
 }

@@ -2,9 +2,11 @@ package Slash
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/shibaisdog/opns/Traffic"
 )
 
 type Event struct {
+	Traffic     *Traffic.Count
 	Interaction *discordgo.InteractionCreate
 	Client      *discordgo.Session
 }

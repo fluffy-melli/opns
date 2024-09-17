@@ -4,9 +4,11 @@ import (
 	"log"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/shibaisdog/opns/Traffic"
 )
 
 type Event struct {
+	Traffic     *Traffic.Count
 	Client      *discordgo.Session
 	Interaction *discordgo.InteractionCreate
 }
