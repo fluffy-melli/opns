@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -14,9 +15,11 @@ import (
 	"github.com/shibaisdog/opns/Command/Message"
 	"github.com/shibaisdog/opns/Command/Slash"
 	"github.com/shibaisdog/opns/Event/Button"
+	"github.com/shibaisdog/opns/Traffic"
 )
 
 type Bot struct {
+	Traffic *Traffic.Count
 	Session *discordgo.Session
 }
 
@@ -27,6 +30,12 @@ func Create(Token string) Bot {
 		log.Fatalln("error creating Discord session,", err)
 	}
 	return Bot{
+		Traffic: &Traffic.Count{
+			Start:   time.Now(),
+			Event:   0,
+			Slash:   0,
+			Message: 0,
+		},
 		Session: dg,
 	}
 }
@@ -42,6 +51,12 @@ func Env_Create(env_key string) Bot {
 		log.Fatalln("error creating Discord session,", err)
 	}
 	return Bot{
+		Traffic: &Traffic.Count{
+			Start:   time.Now(),
+			Event:   0,
+			Slash:   0,
+			Message: 0,
+		},
 		Session: dg,
 	}
 }
@@ -93,6 +108,7 @@ func (bot *Bot) Upload_Slash_Command() {
 		if i.Type == discordgo.InteractionMessageComponent {
 			return
 		}
+		bot.Traffic.Slash += 1
 		respond := false
 		for _, cmd := range Command.Slash_CommandList {
 			if i.Type != discordgo.InteractionApplicationCommand {
@@ -118,6 +134,7 @@ func (bot *Bot) Upload_Message_Command() {
 		log.Fatalf("Error: discord session state user is nil")
 		return
 	}
+	bot.Traffic.Message += 1
 	for _, cmd := range Command.Message_CommandList {
 		bot.Session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 			if m.Content == cmd.Definition.Name {
@@ -141,6 +158,7 @@ func (bot *Bot) Upload_Event_Button() {
 		log.Fatalf("Error: discord session state user is nil")
 		return
 	}
+	bot.Traffic.Event += 1
 	for _, cmd := range Button.Button_Interaction_List {
 		bot.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			if i.Type == discordgo.InteractionMessageComponent {
