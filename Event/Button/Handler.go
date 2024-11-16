@@ -19,10 +19,10 @@ type OnClick struct {
 	Handler  func(Event)
 }
 
-var Button_Interaction_List = []OnClick{}
+var Button_Interaction_List = []*OnClick{}
 
-func Handler(CustomID string, Handler func(Event)) OnClick {
-	return OnClick{
+func Handler(CustomID string, Handler func(Event)) *OnClick {
+	return &OnClick{
 		CustomID: CustomID,
 		Handler:  Handler,
 	}
@@ -35,5 +35,5 @@ func (bi *OnClick) Register() {
 		}, true)
 		return
 	}
-	Button_Interaction_List = append(Button_Interaction_List, *bi)
+	Button_Interaction_List = append(Button_Interaction_List, bi)
 }

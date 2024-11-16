@@ -6,7 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	Md_Message "github.com/shibaisdog/opns/Command/Message"
+	"github.com/shibaisdog/opns/Channel/Send"
 	"github.com/shibaisdog/opns/Error"
 )
 
@@ -62,57 +62,12 @@ func (h *Event) Reply(message Message) {
 }
 
 // Send a message to the channel sent by the user
-func (h *Event) Channel_Send(message Md_Message.Message) Response_Message {
-	var Data = discordgo.MessageSend{}
-	if message.Text != "" {
-		Data.Content = message.Text
-	}
-	if len(message.Files) != 0 {
-		Data.Files = message.Files
-	}
-	if len(message.Embeds) != 0 {
-		Data.Embeds = message.Embeds
-	}
-	if len(message.Buttons) != 0 {
-		buttons := make([]discordgo.MessageComponent, len(message.Buttons))
-		for i, button := range message.Buttons {
-			buttons[i] = button
-		}
-		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: buttons})
-	}
-	if len(message.SelectMenu) != 0 {
-		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
-		for i, selectd := range message.SelectMenu {
-			selects[i] = selectd
-		}
-		Data.Components = append(Data.Components, discordgo.ActionsRow{Components: selects})
-	}
-	if message.Ephemeral {
-		Data.Flags = discordgo.MessageFlagsEphemeral
-	}
-	if message.TTS {
-		Data.TTS = true
-	}
-	Data.AllowedMentions = message.AllowedMentions
-	Data.Reference = message.Reference
-	Data.StickerIDs = message.StickerIDs
-	Msg, err := h.Client.ChannelMessageSendComplex(h.Interaction.ChannelID, &Data)
-	if err != nil {
-		Error.New(Error.Err{
-			Msg:       errors.New("" + fmt.Sprintf("error sending complex message > '%v'", err)),
-			Client:    h.Client,
-			GuildID:   h.Interaction.GuildID,
-			ChannelID: h.Interaction.ChannelID,
-		}, false)
-	}
-	return Response_Message{
-		Message: Msg,
-		Handler: h,
-	}
+func (h *Event) Channel_Send(message Send.Message) *Send.Response_Message {
+	return Send.Channel(h.Client, h.Interaction.ChannelID, message)
 }
 
 // Follow up the sent reply message
-func (h *Event) Followup(message Webhook) Response_Followup {
+func (h *Event) Followup(message Webhook) *Response_Followup {
 	var Data = discordgo.WebhookParams{}
 	if message.Text != "" {
 		Data.Content = message.Text
@@ -163,7 +118,7 @@ func (h *Event) Followup(message Webhook) Response_Followup {
 			ChannelID: h.Interaction.ChannelID,
 		}, false)
 	}
-	return Response_Followup{
+	return &Response_Followup{
 		Message: followup_message,
 		Handler: h,
 	}

@@ -15,10 +15,10 @@ type Message_Definition struct {
 
 type Setup_Message struct {
 	Definition *Message_Definition
-	Handler    func(Message.Event)
+	Handler    func(*Message.Event)
 }
 
-var Message_CommandList = []Setup_Message{}
+var Message_CommandList = []*Setup_Message{}
 
 // Register the message_command
 func (S *Setup_Message) Register() {
@@ -28,5 +28,5 @@ func (S *Setup_Message) Register() {
 		}, true)
 		return
 	}
-	Message_CommandList = append(Message_CommandList, *S)
+	Message_CommandList = append(Message_CommandList, S)
 }

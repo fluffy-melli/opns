@@ -24,7 +24,7 @@ type Message struct {
 	TTS        bool
 }
 
-type Edit_Message struct {
+type WebhookEdit struct {
 	Text            string
 	Files           []*discordgo.File
 	Embeds          []*discordgo.MessageEmbed

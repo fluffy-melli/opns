@@ -10,14 +10,14 @@ import (
 )
 
 type Shard struct {
-	Client    Bot.Bot
+	Client    *Bot.Bot
 	Count, ID int
 }
 
-var Shard_List = []Shard{}
+var Shard_List = []*Shard{}
 
 // Create a new shard
-func Create(Token string, ShardID int, Shard_Max int) Shard {
+func Create(Token string, ShardID int, Shard_Max int) *Shard {
 	Client := Bot.Create(Token)
 	Client.Session.ShardID = ShardID
 	ShardCount := 0
@@ -34,7 +34,7 @@ func Create(Token string, ShardID int, Shard_Max int) Shard {
 		ShardCount = Shard_Max
 	}
 	Client.Session.ShardCount = ShardCount
-	sh := Shard{
+	sh := &Shard{
 		Client: Client,
 		Count:  ShardCount,
 		ID:     ShardID,
@@ -45,6 +45,6 @@ func Create(Token string, ShardID int, Shard_Max int) Shard {
 }
 
 // Get the shard list
-func List() []Shard {
+func List() []*Shard {
 	return Shard_List
 }

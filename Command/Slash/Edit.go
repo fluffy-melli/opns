@@ -6,106 +6,22 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	Md_Message "github.com/shibaisdog/opns/Command/Message"
+	"github.com/shibaisdog/opns/Channel/Send"
 	"github.com/shibaisdog/opns/Error"
 )
 
 // Edit a message that has already been sent
-func (h *Response_Message) Edit(message Md_Message.Edit_Message) Response_Message {
-	var Data = discordgo.MessageEdit{}
-	if message.Text != "" {
-		Data.Content = &(message.Text)
-	}
-	if len(message.Files) != 0 {
-		Data.Files = message.Files
-	}
-	if len(message.Embeds) != 0 {
-		Data.Embeds = &(message.Embeds)
-	}
-	if len(message.Buttons) != 0 {
-		buttons := make([]discordgo.MessageComponent, len(message.Buttons))
-		for i, button := range message.Buttons {
-			buttons[i] = button
-		}
-		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: buttons})
-	}
-	if len(message.SelectMenu) != 0 {
-		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
-		for i, selectd := range message.SelectMenu {
-			selects[i] = selectd
-		}
-		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: selects})
-	}
-	if message.Ephemeral {
-		Data.Flags = discordgo.MessageFlagsEphemeral
-	}
-	Data.ID = h.Message.ID
-	Data.Channel = h.Message.ChannelID
-	Data.AllowedMentions = message.AllowedMentions
-	Msg, err := h.Handler.Client.ChannelMessageEditComplex(&Data)
-	if err != nil {
-		Error.New(Error.Err{
-			Msg:       errors.New("" + fmt.Sprintf("error editing complex message > '%v'", err)),
-			Client:    h.Handler.Client,
-			GuildID:   h.Message.GuildID,
-			ChannelID: h.Message.ChannelID,
-		}, false)
-	}
-	return Response_Message{
-		Message: Msg,
-		Handler: h.Handler,
-	}
+func (h *Response_Message) Edit(message Send.Edit_Message) *Send.Response_Message {
+	return Send.Edit(h.Handler.Client, message, h.Message.ID, h.Message.ChannelID)
 }
 
 // Edit the message corresponding to the message ID.
-func (h *Event) Edit_ID(message Md_Message.Edit_Message, Message_ID string, Channel_ID string) Response_Message {
-	var Data = discordgo.MessageEdit{}
-	if message.Text != "" {
-		Data.Content = &(message.Text)
-	}
-	if len(message.Files) != 0 {
-		Data.Files = message.Files
-	}
-	if len(message.Embeds) != 0 {
-		Data.Embeds = &(message.Embeds)
-	}
-	if len(message.Buttons) != 0 {
-		buttons := make([]discordgo.MessageComponent, len(message.Buttons))
-		for i, button := range message.Buttons {
-			buttons[i] = button
-		}
-		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: buttons})
-	}
-	if len(message.SelectMenu) != 0 {
-		selects := make([]discordgo.MessageComponent, len(message.SelectMenu))
-		for i, selectd := range message.SelectMenu {
-			selects[i] = selectd
-		}
-		*Data.Components = append(*Data.Components, discordgo.ActionsRow{Components: selects})
-	}
-	if message.Ephemeral {
-		Data.Flags = discordgo.MessageFlagsEphemeral
-	}
-	Data.ID = Message_ID
-	Data.Channel = Channel_ID
-	Data.AllowedMentions = message.AllowedMentions
-	Msg, err := h.Client.ChannelMessageEditComplex(&Data)
-	if err != nil {
-		Error.New(Error.Err{
-			Msg:       errors.New("" + fmt.Sprintf("error editing complex message > '%v'", err)),
-			Client:    h.Client,
-			GuildID:   h.Interaction.GuildID,
-			ChannelID: h.Interaction.ChannelID,
-		}, false)
-	}
-	return Response_Message{
-		Message: Msg,
-		Handler: h,
-	}
+func (h *Event) Edit_ID(message Send.Edit_Message, Message_ID string, Channel_ID string) *Send.Response_Message {
+	return Send.Edit(h.Client, message, Message_ID, Channel_ID)
 }
 
 // Edit the sent reply message
-func (h *Event) Edit(message Edit_Message) Response_Message {
+func (h *Event) Edit(message WebhookEdit) *Send.Response_Message {
 	var Data = discordgo.WebhookEdit{}
 	if message.Text != "" {
 		Data.Content = &(message.Text)
@@ -143,14 +59,14 @@ func (h *Event) Edit(message Edit_Message) Response_Message {
 			ChannelID: h.Interaction.ChannelID,
 		}, false)
 	}
-	return Response_Message{
+	return &Send.Response_Message{
 		Message: edit_message,
-		Handler: h,
+		Client:  h.Client,
 	}
 }
 
 // Edit the sent followup message
-func (h *Response_Followup) Edit(message Edit_Message) *discordgo.Message {
+func (h *Response_Followup) Edit(message WebhookEdit) *Send.Response_Message {
 	var Data = discordgo.WebhookEdit{}
 	if message.Text != "" {
 		Data.Content = &(message.Text)
@@ -181,7 +97,10 @@ func (h *Response_Followup) Edit(message Edit_Message) *discordgo.Message {
 			ChannelID: h.Message.ChannelID,
 		}, false)
 	}
-	return edit_message
+	return &Send.Response_Message{
+		Message: edit_message,
+		Client:  h.Handler.Client,
+	}
 }
 
 /*

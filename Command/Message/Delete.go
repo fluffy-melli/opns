@@ -7,7 +7,7 @@ import (
 	"github.com/shibaisdog/opns/Error"
 )
 
-func (h *Response_Message) Delete(message Edit_Message) {
+func (h *Response_Message) Delete() {
 	err := h.Handler.Client.ChannelMessageDelete(h.Message.ChannelID, h.Message.ID)
 	if err != nil {
 		Error.New(Error.Err{

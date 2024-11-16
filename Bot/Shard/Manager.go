@@ -9,7 +9,7 @@ import (
 )
 
 // Set up shards automatically
-func Manager(Token string, ShardCount int) []Shard {
+func Manager(Token string, ShardCount int) []*Shard {
 	if ShardCount > 0 {
 		for i := 0; i < ShardCount; i++ {
 			Create(Token, i, ShardCount)
@@ -21,7 +21,7 @@ func Manager(Token string, ShardCount int) []Shard {
 }
 
 // Set up shards automatically with dotenv
-func Env_Manager(key string, ShardCount int) []Shard {
+func Env_Manager(key string, ShardCount int) []*Shard {
 	err := godotenv.Load()
 	if err != nil {
 		Error.New(Error.Err{

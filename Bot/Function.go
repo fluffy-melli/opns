@@ -21,14 +21,14 @@ import (
 )
 
 // create a bot
-func Create(Token string) Bot {
+func Create(Token string) *Bot {
 	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {
 		Error.New(Error.Err{
 			Msg: errors.New("" + fmt.Sprintf("error creating Discord session > %v", err)),
 		}, true)
 	}
-	return Bot{
+	return &Bot{
 		Traffic: &Traffic.Count{
 			Start:   time.Now(),
 			Event:   0,
@@ -40,7 +40,7 @@ func Create(Token string) Bot {
 }
 
 // create a bot with dotenv
-func Env_Create(env_key string) Bot {
+func Env_Create(env_key string) *Bot {
 	err := godotenv.Load()
 	if err != nil {
 		Error.New(Error.Err{
@@ -53,7 +53,7 @@ func Env_Create(env_key string) Bot {
 			Msg: errors.New("" + fmt.Sprintf("error creating Discord session > %v", err)),
 		}, true)
 	}
-	return Bot{
+	return &Bot{
 		Traffic: &Traffic.Count{
 			Start:   time.Now(),
 			Event:   0,
@@ -127,7 +127,7 @@ func (bot *Bot) Upload_Slash_Command() {
 			}
 			if i.ApplicationCommandData().Name == cmd.Definition.Name {
 				respond = true
-				cmd.Handler(Slash.Event{
+				cmd.Handler(&Slash.Event{
 					Traffic:     bot.Traffic,
 					Interaction: i,
 					Client:      s,
@@ -154,13 +154,13 @@ func (bot *Bot) Upload_Message_Command() {
 	for _, cmd := range Command.Message_CommandList {
 		bot.Session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 			if m.Content == cmd.Definition.Name {
-				cmd.Handler(Message.Event{
+				cmd.Handler(&Message.Event{
 					Traffic:     bot.Traffic,
 					Interaction: m,
 					Client:      s,
 				})
 			} else if cmd.Definition.StartWith && strings.HasPrefix(m.Content, cmd.Definition.Name) {
-				cmd.Handler(Message.Event{
+				cmd.Handler(&Message.Event{
 					Traffic:     bot.Traffic,
 					Interaction: m,
 					Client:      s,

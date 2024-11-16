@@ -7,7 +7,7 @@ import (
 )
 
 // Edit a message that has already been sent
-func (h *Response_Message) Edit(message Edit_Message) Response_Message {
+func (h *Response_Message) Edit(message Edit_Message) *Response_Message {
 	var Data = discordgo.MessageEdit{}
 	if message.Text != "" {
 		Data.Content = &(message.Text)
@@ -42,14 +42,14 @@ func (h *Response_Message) Edit(message Edit_Message) Response_Message {
 	if err != nil {
 		log.Println("error editing complex message,", err)
 	}
-	return Response_Message{
+	return &Response_Message{
 		Message: Msg,
 		Client:  h.Client,
 	}
 }
 
 // Edit the message corresponding to the message ID.
-func Edit(Client *discordgo.Session, message Edit_Message, Message_ID string, Channel_ID string) Response_Message {
+func Edit(Client *discordgo.Session, message Edit_Message, Message_ID string, Channel_ID string) *Response_Message {
 	var Data = discordgo.MessageEdit{}
 	if message.Text != "" {
 		Data.Content = &(message.Text)
@@ -84,7 +84,7 @@ func Edit(Client *discordgo.Session, message Edit_Message, Message_ID string, Ch
 	if err != nil {
 		log.Println("error editing complex message,", err)
 	}
-	return Response_Message{
+	return &Response_Message{
 		Message: Msg,
 		Client:  Client,
 	}

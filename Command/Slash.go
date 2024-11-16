@@ -9,14 +9,14 @@ import (
 	"github.com/shibaisdog/opns/Error"
 )
 
-type Slash_Definition *discordgo.ApplicationCommand
+//type Slash_Definition *discordgo.ApplicationCommand
 
 type Setup_Slash struct {
-	Definition Slash_Definition
-	Handler    func(Slash.Event)
+	Definition *discordgo.ApplicationCommand
+	Handler    func(*Slash.Event)
 }
 
-var Slash_CommandList = []Setup_Slash{}
+var Slash_CommandList = []*Setup_Slash{}
 
 // Register the slash_command
 func (S *Setup_Slash) Register() {
@@ -26,5 +26,5 @@ func (S *Setup_Slash) Register() {
 		}, true)
 		return
 	}
-	Slash_CommandList = append(Slash_CommandList, *S)
+	Slash_CommandList = append(Slash_CommandList, S)
 }

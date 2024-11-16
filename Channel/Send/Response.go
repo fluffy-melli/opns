@@ -7,7 +7,7 @@ import (
 )
 
 // Send message to desired channel ID
-func Channel(Client *discordgo.Session, ChannelID string, message Message) Response_Message {
+func Channel(Client *discordgo.Session, ChannelID string, message Message) *Response_Message {
 	var Data = discordgo.MessageSend{}
 	if message.Text != "" {
 		Data.Content = message.Text
@@ -45,7 +45,7 @@ func Channel(Client *discordgo.Session, ChannelID string, message Message) Respo
 	if err != nil {
 		log.Println("error sending complex message,", err)
 	}
-	return Response_Message{
+	return &Response_Message{
 		Message: Msg,
 		Client:  Client,
 	}

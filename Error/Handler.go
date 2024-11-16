@@ -31,10 +31,10 @@ func (e *Err) Send_Message() {
 	}
 }
 
-var Event_HandlerList = []Error_Handler{}
+var Event_HandlerList = []*Error_Handler{}
 
 func (h *Error_Handler) Register() {
-	Event_HandlerList = append(Event_HandlerList, *h)
+	Event_HandlerList = append(Event_HandlerList, h)
 }
 
 func New(e Err, exit bool) {
