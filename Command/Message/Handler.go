@@ -2,7 +2,7 @@ package Message
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/shibaisdog/opns/Traffic"
+	"github.com/fluffy-melli/opns/Traffic"
 )
 
 type Event struct {

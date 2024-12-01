@@ -1,7 +1,7 @@
 package Message
 
 import (
-	"github.com/shibaisdog/opns/Channel/Send"
+	"github.com/fluffy-melli/opns/Channel/Send"
 )
 
 // Reply to messages sent by users

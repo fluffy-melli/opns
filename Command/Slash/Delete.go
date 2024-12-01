@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/shibaisdog/opns/Error"
+	"github.com/fluffy-melli/opns/Error"
 )
 
 // Delete the sent reply message

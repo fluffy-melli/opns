@@ -5,8 +5,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"github.com/shibaisdog/opns/Command/Slash"
-	"github.com/shibaisdog/opns/Error"
+	"github.com/fluffy-melli/opns/Command/Slash"
+	"github.com/fluffy-melli/opns/Error"
 )
 
 //type Slash_Definition *discordgo.ApplicationCommand

@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/shibaisdog/opns/Channel/Send"
+	"github.com/fluffy-melli/opns/Channel/Send"
 )
 
 type Err struct {

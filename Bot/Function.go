@@ -11,13 +11,13 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/fluffy-melli/opns/Command"
+	"github.com/fluffy-melli/opns/Command/Message"
+	"github.com/fluffy-melli/opns/Command/Slash"
+	"github.com/fluffy-melli/opns/Error"
+	"github.com/fluffy-melli/opns/Event/Button"
+	"github.com/fluffy-melli/opns/Traffic"
 	"github.com/joho/godotenv"
-	"github.com/shibaisdog/opns/Command"
-	"github.com/shibaisdog/opns/Command/Message"
-	"github.com/shibaisdog/opns/Command/Slash"
-	"github.com/shibaisdog/opns/Error"
-	"github.com/shibaisdog/opns/Event/Button"
-	"github.com/shibaisdog/opns/Traffic"
 )
 
 // create a bot

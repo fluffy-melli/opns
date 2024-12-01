@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/shibaisdog/opns/Bot"
-	"github.com/shibaisdog/opns/Error"
+	"github.com/fluffy-melli/opns/Bot"
+	"github.com/fluffy-melli/opns/Error"
 )
 
 type Shard struct {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/shibaisdog/opns/Error"
+	"github.com/fluffy-melli/opns/Error"
 )
 
 func (h *Response_Message) Delete() {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/shibaisdog/opns/Error"
+	"github.com/fluffy-melli/opns/Error"
 )
 
 type Message struct {

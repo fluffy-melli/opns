@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/shibaisdog/opns/Error"
+	"github.com/fluffy-melli/opns/Error"
 )
 
 func Creaft(Client *discordgo.Session, ThreadName string, Duration int, ChannelID string, MessageID string) *discordgo.Channel {

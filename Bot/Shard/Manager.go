@@ -4,8 +4,8 @@ import (
 	"errors"
 	"os"
 
+	"github.com/fluffy-melli/opns/Error"
 	"github.com/joho/godotenv"
-	"github.com/shibaisdog/opns/Error"
 )
 
 // Set up shards automatically

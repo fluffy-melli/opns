@@ -6,8 +6,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"github.com/shibaisdog/opns/Channel/Send"
-	"github.com/shibaisdog/opns/Error"
+	"github.com/fluffy-melli/opns/Channel/Send"
+	"github.com/fluffy-melli/opns/Error"
 )
 
 // Edit a message that has already been sent

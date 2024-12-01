@@ -4,8 +4,8 @@ import (
 	"errors"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/shibaisdog/opns/Error"
-	"github.com/shibaisdog/opns/Traffic"
+	"github.com/fluffy-melli/opns/Error"
+	"github.com/fluffy-melli/opns/Traffic"
 )
 
 type Event struct {

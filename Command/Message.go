@@ -3,8 +3,8 @@ package Command
 import (
 	"errors"
 
-	"github.com/shibaisdog/opns/Command/Message"
-	"github.com/shibaisdog/opns/Error"
+	"github.com/fluffy-melli/opns/Command/Message"
+	"github.com/fluffy-melli/opns/Error"
 )
 
 type Message_Definition struct {
